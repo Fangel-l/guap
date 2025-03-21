@@ -1,5 +1,7 @@
 import datetime as date
 from parser import *
+
+# constant
 WEEK = { "Monday": "Понедельник",
         "Tuesday": "Вторник",
         "Wednesday": "Среда",
@@ -9,6 +11,7 @@ WEEK = { "Monday": "Понедельник",
         "Sunday": "Воскресенье"
 }
 
+# sort timetable
 def table_everyday(day, month, year):
     name_day = date.datetime(year=year, month=month, day=day).strftime("%A")
     name_day = WEEK.get(name_day)
@@ -22,9 +25,11 @@ def table_everyday(day, month, year):
     else:
         timetable_today = []
         flag = False
+        # sort timetable
         for i in range(len(today)):
             if len(timetable_today) == 0:
                 timetable_today.append(today[i])
+            # check party
             elif today[i] == "▲" or today[i] == "▼":
                 if party == today[i]:
                     if "пара" in today[i-1] or "пара" in today[i-1]:
@@ -56,6 +61,7 @@ def table_everyday(day, month, year):
 
                 flag = True
             
+            #check number room
             elif flag == True and "ауд." in today[i]:
                 flag = False
                 flag_1 = False

@@ -4,6 +4,7 @@ import datetime
 from math import ceil
 import datetime as date
 
+# constant
 MONTH = {
      "января": "1",
      "февраля": "2",
@@ -19,6 +20,7 @@ MONTH = {
      "декабря": "12",
 }
 
+# pars timetable
 def timetable_now_pars(now_day, next_day):
      url = "https://guap.ru/rasp/?gr=7074"
      st_accept = "text/html"
@@ -35,6 +37,7 @@ def timetable_now_pars(now_day, next_day):
      lessons = soup.find_all(["div", "h4"], ["lead lh-sm", "week2", "week1", "text-danger border-bottom border-danger border-2 px-0 py-2 my-5", "mt-3 text-danger", "opacity-75", "fs-6 lh-sm opacity-50"])
 
      lessons_list= []
+     # preprocessing timetable
      for i in range(len(lessons)):
           if "\n" in lessons[i]:
                b = lessons[i].text.split("\n") 
@@ -58,7 +61,7 @@ def timetable_now_pars(now_day, next_day):
      return lessons_list[today:tomorow]
 
 
-
+# party week 
 def party_week_everyday(day, month, year):
      date_user = date.date(year=year, month=month, day=day)
      if 1 <= month < 9:
@@ -76,7 +79,7 @@ def party_week_everyday(day, month, year):
      else:
           return "▲"
 
-
+# pars session(not work)
 def session():
      url = "https://raspsess.guap.ru/?g=479"
      st_accept = "text/html"
@@ -94,11 +97,3 @@ def session():
      exam_list = exam.text.split()
      return exam_list
 
-WEEK = { "Monday": "Понедельник",
-        "Tuesday": "Вторник",
-        "Wednesday": "Среда",
-        "Thursday": "Четверг",
-        "Friday": "Пятница",
-        "Saturday": "Суббота",
-        "Sunday": "Воскресенье"
-}

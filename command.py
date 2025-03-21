@@ -2,6 +2,7 @@ from init import *
 from db_request import *
 from session_raspr import *
 
+#command start and add user in db
 @bot.message_handler(commands=["start"])
 def command_start(message):
     user_name = message.from_user.first_name
@@ -19,6 +20,7 @@ def command_start(message):
     else:
         bot.send_message(message.chat.id, "Добавьте бота в группу в которой хотите его использовать, а затем в этой группе введите команду старт.")
 
+# command all mark all users in chat
 @bot.message_handler(commands=["all"])
 def command_all(message):
     name_group = str(message.chat.title).replace(" ", "")
@@ -32,6 +34,8 @@ def command_all(message):
         else:
             if str(message.from_user.id) != str(all_users[i][1]): 
                 str_all_users_id += f"[{all_users[i][0]}](tg://user?id={all_users[i][1]}) "
+
+    #check user nik
     if len(str_all_users_nik) != 0:
         lis_all_users_nik = str_all_users_nik.split()
         str_all_users_nik_sec = ""
@@ -56,6 +60,8 @@ def command_all(message):
         if str_all_users_id_sec != "":
             bot.send_message(message.chat.id, str_all_users_id_sec, parse_mode="Markdown")
 
+
+# command update. update data user
 @bot.message_handler(commands=["update"])
 def command_update(message):
     if str(message.chat.title) != "None":
@@ -64,7 +70,8 @@ def command_update(message):
         bot.reply_to(message, "Ваши данные обновлены")
     else:
         bot.send_message(message.chat.id, "Эту функцию можно использовать только в группе")
-    
+
+ # command help. send help text   
 @bot.message_handler(commands=["help"])
 def command_help(message):
     bot.reply_to(message, """Этот бот предназначен для вывода рассписания, а так же является альтернативой функции all.
@@ -86,6 +93,7 @@ def command_help(message):
 Убедительная просьба стараться не ломать бота, отправляя то на что он не расчитан.(Если у меня будет время и я захочу найти баги в боте, то я обязательно попрошу вас потестить)
                      """)
 
+# command exam(not work). send timetable exam
 @bot.message_handler(commands=["exam"])
 def command_C(message):
     return_message = ""

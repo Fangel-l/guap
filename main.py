@@ -3,17 +3,20 @@ from command import *
 from timetable import *
 import datetime
 
+# init constant and variables
 WEEKDAY = {"0": "Понедельник"}
 today = datetime.datetime.today()
 day = today.strftime("%d")
 month = today.strftime("%m")
 year = today.strftime("%y")
 
+# func for processing and send timetable
 @bot.message_handler(content_types=["text"])
 def raspr(message):
     global today, day, month, year
     if message.text[:2].lower() == "!р":
         try:
+            # check message if message have date 
             message_n = message.text.split()[1].split(".")
             day = message_n[0]
             month = message_n[1]
@@ -33,6 +36,7 @@ def raspr(message):
             
             timetable = table_everyday(int(day), int(month), int(year))
 
+            # processing message 
             timetable_message = ""
             for i in range(len(timetable)):
                 if i == 0:
@@ -49,10 +53,13 @@ def raspr(message):
                     timetable_message += "<b>" + timetable[i] + "</b>)" + " "
                 else:
                     timetable_message += "<b>" + timetable[i] + "</b>" + " " 
+            # send message 
             bot.reply_to(message, timetable_message, parse_mode="HTML")
             
         except Exception:
             try:
+
+                #check message if message have "завтра"
                 if message.text.split()[1].lower() == "завтра": 
                     today = datetime.date.today()
                     tz_string = str(datetime.datetime.now().astimezone().tzinfo)
@@ -71,7 +78,8 @@ def raspr(message):
                     day = int(tomorrow.strftime('%d'))
                     month = int(tomorrow.strftime('%m'))
                     year = int(tomorrow.strftime('%y'))
-
+                
+                #check message if message have "сегодня"
                 elif message.text.split()[1].lower() == "сегодня":
                     today = datetime.date.today()
                     tz_string = str(datetime.datetime.now().astimezone().tzinfo)
@@ -91,7 +99,7 @@ def raspr(message):
                     month = int(today.strftime('%m'))
                     year = int(today.strftime('%y'))
 
-                
+                #check message if message have "вчера"
                 elif message.text.split()[1].lower() == "вчера":
                     today = datetime.date.today()
                     tz_string = str(datetime.datetime.now().astimezone().tzinfo)
@@ -110,6 +118,7 @@ def raspr(message):
                     month = int(yesterday.strftime('%m'))
                     year = int(yesterday.strftime('%y'))
 
+                #check message if message have day of week
                 elif message.text.split()[1].capitalize() in WEEK.values():
                     today = datetime.date.today()
                     if WEEK.get(datetime.datetime.today().strftime("%A")) == message.text.split()[1].capitalize():
@@ -127,6 +136,8 @@ def raspr(message):
                         day = int(today.strftime('%d'))
                         month = int(today.strftime('%m'))
                         year = int(today.strftime('%y'))
+
+                    #check timezone
                     else:
                         today = datetime.date.today()
                         tz_string = str(datetime.datetime.now().astimezone().tzinfo)
@@ -164,6 +175,7 @@ def raspr(message):
                                 break
 
 
+                # processing message
                 timetable = table_everyday(day, month, year)
                 timetable_message = ""
                 for i in range(len(timetable)):
@@ -187,6 +199,7 @@ def raspr(message):
             except Exception        :
                 bot.reply_to(message, "неверный ввод")
 
+# check new chat members and add in db
 @bot.message_handler(content_types=["new_chat_members"])
 def new_member(message):
     user_name = message.from_user.first_name
@@ -205,7 +218,7 @@ def new_member(message):
         bot.send_message(message.chat.id, "Добавьте бота в группу в которой хотите его использовать, а затем в этой группе введите команду старт.")
 
 
-
+#check left chat members and delete in db
 @bot.message_handler(content_types=['left_chat_member'])
 def new_member(message):
     tg_id = message.from_user.id
@@ -213,5 +226,5 @@ def new_member(message):
     del_user_db(tg_id, name_group)
         
 
-
+# run bot
 bot.infinity_polling()
